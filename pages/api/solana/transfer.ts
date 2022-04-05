@@ -24,17 +24,24 @@ export default async function transfer(
 
     //... let's skip the beginning as it should be familiar for you by now!
     // Find the parameter to pass
-    const instructions = SystemProgram.transfer;
-
-    // How could you construct a signer array's
-    const signers = undefined;
-
-    // Maybe adding something to a Transaction could be interesting ?
-    const transaction = new Transaction();
-
-    // We can send and confirm a transaction in one row.
-    const hash = undefined;
-
+      const instructions = SystemProgram.transfer({
+        fromPubkey,
+        toPubkey,
+        lamports,
+      });
+      
+      const signers = [
+        {
+          publicKey: fromPubkey,
+          secretKey,
+        },
+      ];
+      
+      const transaction = new Transaction().add(instructions);
+      
+      const hash = await sendAndConfirmTransaction(connection, transaction, signers);
+      
+      
     res.status(200).json(hash);
   } catch (error) {
     let errorMessage = error instanceof Error ? error.message : 'Unknown Error';
